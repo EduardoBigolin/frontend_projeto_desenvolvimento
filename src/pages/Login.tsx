@@ -18,17 +18,12 @@ export function Login() {
       .post("http://localhost:3000/api/v1/users/login", userData)
       .then((res) => {
         console.log(res);
-        login(res.data.message.data);
+        login({ ...res.data.message.data, token: res.data.message.token });
         to("/oi");
       })
       .catch((err) => {
         alert(err.response.data.message);
       });
-
-    //
-    // const token = { name: "João", email: "Hello" };
-    // login(token);
-    // to("/oi");
   }
 
   return (

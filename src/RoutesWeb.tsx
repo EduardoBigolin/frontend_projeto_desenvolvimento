@@ -5,10 +5,13 @@ import App from "./App";
 import React, { useState, useEffect } from "react";
 import { PrivateRoute } from "./PrivateRoutes";
 import { HomePage } from "./pages/HomePage";
+import { HomeUser } from "./pages/HomeUser";
+import ListAll from "./pages/ListAll";
+import { PrivateRouteIsAdmin } from "./PrivateRoutesIsAdmin";
 export function RoutesWeb() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-
+  const [isAdmin, setIsAdmin] = useState(false);
   useEffect(() => {
     const logged = localStorage.getItem("logged");
 
@@ -19,8 +22,9 @@ export function RoutesWeb() {
     setLoading(false);
   }, []);
 
-  const login = (userData: { name: string; email: string }) => {
+  const login = (userData: any) => {
     setIsAuthenticated(true);
+    setIsAdmin(userData.isAdmin);
     localStorage.setItem("logged", JSON.stringify(userData));
   };
 
@@ -33,7 +37,9 @@ export function RoutesWeb() {
 
   return (
     <Router>
-      <AuthContext.Provider value={{ isAuthenticated, loading, login, logout }}>
+      <AuthContext.Provider
+        value={{ isAuthenticated, loading, login, logout, isAdmin }}
+      >
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/login" element={<Login />} />
@@ -43,6 +49,23 @@ export function RoutesWeb() {
               <PrivateRoute>
                 <HomePage />
               </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/home"
+            element={
+              <PrivateRoute>
+                <HomeUser />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/listAll"
+            element={
+              <PrivateRouteIsAdmin>
+                <ListAll />
+              </PrivateRouteIsAdmin>
             }
           />
         </Routes>
